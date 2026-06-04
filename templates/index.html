@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -102,21 +103,35 @@
             border-radius: 16px;
             padding: 14px 18px;
             margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
             transition: transform 0.15s, box-shadow 0.15s;
             border-left: 5px solid;
         }
 
         li:hover {
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        li:nth-child(5n+1) { border-color: #f472b6; }
-        li:nth-child(5n+2) { border-color: #818cf8; }
-        li:nth-child(5n+3) { border-color: #34d399; }
-        li:nth-child(5n+4) { border-color: #fbbf24; }
-        li:nth-child(5n+5) { border-color: #22d3ee; }
+        li:nth-child(5n+1) {
+            border-color: #f472b6;
+        }
+
+        li:nth-child(5n+2) {
+            border-color: #818cf8;
+        }
+
+        li:nth-child(5n+3) {
+            border-color: #34d399;
+        }
+
+        li:nth-child(5n+4) {
+            border-color: #fbbf24;
+        }
+
+        li:nth-child(5n+5) {
+            border-color: #22d3ee;
+        }
 
         .task-text {
             display: flex;
@@ -174,6 +189,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="card">
         <h1>My To-Do List</h1>
@@ -185,25 +201,26 @@
         </form>
 
         {% if tasks %}
-            <p class="count">{{ tasks|length }} task{{ 's' if tasks|length != 1 else '' }}</p>
-            <ul>
-                {% set emojis = ['🌸', '⚡', '🎯', '🚀', '🌟'] %}
-                {% for task in tasks %}
-                    <li>
-                        <span class="task-text">
-                            <span class="emoji">{{ emojis[loop.index0 % 5] }}</span>
-                            {{ task }}
-                        </span>
-                        <a class="delete" href="/delete/{{ loop.index0 }}" title="Delete">✕</a>
-                    </li>
-                {% endfor %}
-            </ul>
+        <p class="count">{{ tasks|length }} task{{ 's' if tasks|length != 1 else '' }}</p>
+        <ul>
+            {% set emojis = ['🌸', '⚡', '🎯', '🚀', '🌟'] %}
+            {% for task in tasks %}
+            <li>
+                <span class="task-text">
+                    <span class="emoji">{{ emojis[loop.index0 % 5] }}</span>
+                    {{ task }}
+                </span>
+                <a class="delete" href="/delete/{{ loop.index0 }}" title="Delete">✕</a>
+            </li>
+            {% endfor %}
+        </ul>
         {% else %}
-            <div class="empty">
-                <span>🎉</span>
-                Nothing to do yet — add your first task!
-            </div>
+        <div class="empty">
+            <span>🎉</span>
+            Nothing to do yet — add your first task!
+        </div>
         {% endif %}
     </div>
 </body>
+
 </html>
