@@ -351,10 +351,10 @@
             <li class="priority-{{ task.priority }}">
 
                 <a class="toggle {% if task.done %}checked{% endif %}"
-                   href="/toggle/{{ loop.index0 }}" title="Mark complete">✓</a>
+                   href="/toggle/{{ task.id }}" title="Mark complete">✓</a>
 
-                {% if edit_id == loop.index0 %}
-                    <form class="edit-form" action="/edit/{{ loop.index0 }}" method="POST">
+                {% if edit_id == task.id %}
+                    <form class="edit-form" action="/edit/{{ task.id }}" method="POST">
                         <input type="text" name="text" value="{{ task.text }}" required autofocus>
                         <button type="submit" class="btn-save">Save</button>
                         <a class="cancel" href="/" title="Cancel">✕</a>
@@ -373,8 +373,8 @@
                     </div>
 
                     <div class="actions">
-                        <a class="edit" href="/?edit={{ loop.index0 }}" title="Edit">✎</a>
-                        <a class="delete" href="/delete/{{ loop.index0 }}" title="Delete">✕</a>
+                        <a class="edit" href="/?edit={{ task.id }}" title="Edit">✎</a>
+                        <a class="delete" href="/delete/{{ task.id }}" title="Delete">✕</a>
                     </div>
                 {% endif %}
 
