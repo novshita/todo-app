@@ -61,7 +61,9 @@
             margin-bottom: 24px;
         }
 
-        input[type="text"], input[type="date"], select {
+        input[type="text"],
+        input[type="date"],
+        select {
             padding: 10px 14px;
             font-size: 14px;
             border: 2px solid #e2e8f0;
@@ -121,9 +123,7 @@
         }
 
         li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: block;
             background: white;
             border-radius: 16px;
             padding: 12px 14px;
@@ -138,9 +138,23 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        li.priority-high  { border-color: #ef4444; }
-        li.priority-medium { border-color: #f59e0b; }
-        li.priority-low   { border-color: #22c55e; }
+        .task-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        li.priority-high {
+            border-color: #ef4444;
+        }
+
+        li.priority-medium {
+            border-color: #f59e0b;
+        }
+
+        li.priority-low {
+            border-color: #22c55e;
+        }
 
         /* ── Toggle checkbox ── */
         a.toggle {
@@ -207,9 +221,20 @@
             letter-spacing: 0.04em;
         }
 
-        .badge-high   { background: #fee2e2; color: #ef4444; }
-        .badge-medium { background: #fef9c3; color: #ca8a04; }
-        .badge-low    { background: #dcfce7; color: #16a34a; }
+        .badge-high {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .badge-medium {
+            background: #fef9c3;
+            color: #ca8a04;
+        }
+
+        .badge-low {
+            background: #dcfce7;
+            color: #16a34a;
+        }
 
         .due-date {
             font-size: 0.75rem;
@@ -223,7 +248,8 @@
             flex-shrink: 0;
         }
 
-        a.edit, a.delete {
+        a.edit,
+        a.delete {
             border-radius: 50%;
             width: 28px;
             height: 28px;
@@ -299,6 +325,78 @@
             background: #e2e8f0;
         }
 
+        /* ── Subtasks ── */
+        .subtasks-section {
+            margin-top: 10px;
+            padding-left: 34px;
+        }
+
+        .subtask {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #64748b;
+            padding: 4px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .subtask:last-child {
+            border-bottom: none;
+        }
+
+        .subtask a.toggle {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            font-size: 0.6rem;
+        }
+
+        .subtask-text {
+            flex: 1;
+        }
+
+        .subtask-text.done {
+            text-decoration: line-through;
+            color: #cbd5e1;
+        }
+
+        .subtask a.delete {
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            color: #cbd5e1;
+            font-size: 0.7rem;
+        }
+
+        .subtask a.delete:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .add-subtask-form {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding-left: 34px;
+        }
+
+        .add-subtask-form input[type="text"] {
+            flex: 1;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 50px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .add-subtask-form button {
+            padding: 5px 12px;
+            font-size: 12px;
+            border-radius: 50px;
+            box-shadow: none;
+        }
+
         /* ── Footer ── */
         .count {
             text-align: center;
@@ -350,16 +448,18 @@
             {% for task in tasks %}
             <li class="priority-{{ task.priority }}">
 
-                <a class="toggle {% if task.done %}checked{% endif %}"
-                   href="/toggle/{{ task.id }}" title="Mark complete">✓</a>
+                <!-- Main task row -->
+                <div class="task-row">
+                    <a class="toggle {% if task.done %}checked{% endif %}" href="/toggle/{{ task.id }}"
+                        title="Mark complete">✓</a>
 
-                {% if edit_id == task.id %}
+                    {% if edit_id == task.id %}
                     <form class="edit-form" action="/edit/{{ task.id }}" method="POST">
                         <input type="text" name="text" value="{{ task.text }}" required autofocus>
                         <button type="submit" class="btn-save">Save</button>
                         <a class="cancel" href="/" title="Cancel">✕</a>
                     </form>
-                {% else %}
+                    {% else %}
                     <div class="task-body">
                         <div class="task-text {% if task.done %}done{% endif %}">
                             {{ emojis[loop.index0 % 5] }} {{ task.text }}
@@ -371,12 +471,31 @@
                             {% endif %}
                         </div>
                     </div>
-
                     <div class="actions">
                         <a class="edit" href="/?edit={{ task.id }}" title="Edit">✎</a>
                         <a class="delete" href="/delete/{{ task.id }}" title="Delete">✕</a>
                     </div>
+                    {% endif %}
+                </div>
+
+                <!-- Subtasks below -->
+                {% if task.subtasks %}
+                <div class="subtasks-section">
+                    {% for subtask in task.subtasks %}
+                    <div class="subtask">
+                        <a class="toggle {% if subtask.done %}checked{% endif %}"
+                            href="/toggle-subtask/{{ task.id }}/{{ subtask.id }}" title="Mark complete">✓</a>
+                        <span class="subtask-text {% if subtask.done %}done{% endif %}">{{ subtask.text }}</span>
+                        <a class="delete" href="/delete-subtask/{{ task.id }}/{{ subtask.id }}" title="Delete">✕</a>
+                    </div>
+                    {% endfor %}
+                </div>
                 {% endif %}
+
+                <form class="add-subtask-form" action="/add-subtask/{{ task.id }}" method="POST">
+                    <input type="text" name="subtask_text" placeholder="+ Add a subtask...">
+                    <button type="submit">Add</button>
+                </form>
 
             </li>
             {% endfor %}
